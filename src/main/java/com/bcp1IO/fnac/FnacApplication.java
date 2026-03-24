@@ -7,8 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FnacApplication {
 
 	public static void main(String[] args) {
-		//SpringApplication.run(FnacApplication.class, args);
-		System.out.println("Hello World");
+		SpringApplication.run(FnacApplication.class, args);
 	}
 
 }
