@@ -2,10 +2,7 @@ package com.bcp1IO.fnac.controller;
 
 import com.bcp1IO.fnac.model.Product;
 import com.bcp1IO.fnac.service.ProductService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +23,15 @@ public class ProductController {
     @PostMapping("/products")
     public Product createProduct(@RequestBody Product newProduct){
         return productService.addProduct(newProduct);
+    }
+
+    @DeleteMapping("/products/{id}")
+    public void deleteProductById(@PathVariable int id){
+        productService.deleteProduct(id);
+    }
+
+    @GetMapping("/products/ASC")
+    public List<Product> getAllByOrder(){
+        return productService.getAllByOrder();
     }
 }
