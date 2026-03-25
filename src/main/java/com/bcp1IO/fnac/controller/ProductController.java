@@ -1,8 +1,10 @@
 package com.bcp1IO.fnac.controller;
 
 import com.bcp1IO.fnac.model.Product;
-import com.bcp1IO.fnac.repository.ProductRepository;
+import com.bcp1IO.fnac.service.ProductService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -10,16 +12,19 @@ import java.util.List;
 @RestController
 public class ProductController {
 
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @GetMapping("/products")
-    public List<Product> getAllProducts(){
-        return productRepository.findAll();
+    public List<Product> getAllProduct(){
+        return productService.getAll();
     }
 
+    @PostMapping("/products")
+    public Product createProduct(@RequestBody Product newProduct){
+        return productService.addProduct(newProduct);
+    }
 }
