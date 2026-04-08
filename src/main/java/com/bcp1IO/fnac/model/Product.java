@@ -1,5 +1,7 @@
 package com.bcp1IO.fnac.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,17 +16,20 @@ public class Product {
     private String description;
     private double price;
 
-    public Product(String name, String description, double price) {
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    //@JsonIgnore
+    @JsonIgnoreProperties("products")
+    private Category category;
+
+    public Product(String name, String description, double price, Category category) {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.category = category;
     }
 
     public Product() {
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {
@@ -49,5 +54,21 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
