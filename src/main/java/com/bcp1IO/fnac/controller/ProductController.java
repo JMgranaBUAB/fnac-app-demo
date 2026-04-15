@@ -1,5 +1,6 @@
 package com.bcp1IO.fnac.controller;
 
+import com.bcp1IO.fnac.exception.ObjectNotFoundException;
 import com.bcp1IO.fnac.model.Product;
 import com.bcp1IO.fnac.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,9 @@ public class ProductController {
             return new ResponseEntity<>(foundProduct.get(), HttpStatus.FOUND);
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        //return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        //throw new ObjectNotFoundException("Este Producto que contiene la ID " + id + " no existe");
+        throw new ObjectNotFoundException("Producto", id);
 
     }
 
