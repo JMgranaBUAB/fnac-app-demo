@@ -1,7 +1,12 @@
 package com.bcp1IO.fnac.controller;
 
+import com.bcp1IO.fnac.dto.ProductDTORequest;
+import com.bcp1IO.fnac.dto.ProductDTOResponse;
+import com.bcp1IO.fnac.dto.ProductMapper;
 import com.bcp1IO.fnac.exception.ObjectNotFoundException;
+import com.bcp1IO.fnac.model.Category;
 import com.bcp1IO.fnac.model.Product;
+import com.bcp1IO.fnac.service.CategoryService;
 import com.bcp1IO.fnac.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +19,11 @@ import java.util.Optional;
 public class ProductController {
 
     private final ProductService productService;
+    private final CategoryService categoryService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/products")
@@ -25,8 +32,31 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public Product createProduct(@RequestBody Product newProduct){
-        return productService.addProduct(newProduct);
+//    public Product createProduct(@RequestBody Product newProduct){
+//        return productService.addProduct(newProduct);
+//    }
+    public ResponseEntity<ProductDTOResponse> createProduct(@RequestBody ProductDTORequest productDTORequest){
+        try{
+            //mapear-convertir del dto-> entidad
+            Optional<Category> optionalCategory = categoryService.findCategory(productDTORequest.categoryId());
+            if (optionalCategory.isEmpty()) throw new ObjectNotFoundException("Categoria", productDTORequest.categoryId());
+
+            //Product newProduct = new Product(productDTO.name(), productDTO.description(), productDTO.price(), optionalCategory.get());
+            Product newProduct = ProductMapper.dto2Entity(productDTORequest, optionalCategory.get());
+
+            Product createdProduct = productService.addProduct(newProduct);
+
+            //transformar Entity -> DTO antes de mandarlo en json
+            //ProductDTO newProductDTO = ProductMapper.entity2DTO(createdProduct);
+            ProductDTOResponse newProductDTO = ProductMapper.entity2DTO(createdProduct);
+
+            //return new ResponseEntity<>(newProductDTO, HttpStatus.CREATED);
+            return new ResponseEntity<>(newProductDTO, HttpStatus.CREATED);
+
+        }
+        catch (Exception exception){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/products/{id}")
