@@ -1,8 +1,12 @@
 package com.bcp1IO.fnac.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="products")
@@ -22,6 +26,18 @@ public class Product {
     //@JsonIgnore
     @JsonIgnoreProperties("products")
     private Category category;
+
+    // many2many
+    @ManyToMany
+    @JoinTable(
+            name = "product_user_mapping",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @JsonBackReference
+    private List<ProductUser> productUsers = new ArrayList<>();
+
+
 
     public Product(String name, String description, double price, Category category) {
         this.name = name;
@@ -72,4 +88,13 @@ public class Product {
     public void setId(int id) {
         this.id = id;
     }
+
+    public void setProductUsers(List<ProductUser> productUsers) {
+        this.productUsers = productUsers;
+    }
+
+    public List<ProductUser> getProductUsers() {
+        return productUsers;
+    }
+
 }

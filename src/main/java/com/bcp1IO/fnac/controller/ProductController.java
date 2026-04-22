@@ -6,6 +6,7 @@ import com.bcp1IO.fnac.dto.ProductMapper;
 import com.bcp1IO.fnac.exception.ObjectNotFoundException;
 import com.bcp1IO.fnac.model.Category;
 import com.bcp1IO.fnac.model.Product;
+import com.bcp1IO.fnac.model.ProductUser;
 import com.bcp1IO.fnac.service.CategoryService;
 import com.bcp1IO.fnac.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -41,17 +42,34 @@ public class ProductController {
             Optional<Category> optionalCategory = categoryService.findCategory(productDTORequest.categoryId());
             if (optionalCategory.isEmpty()) throw new ObjectNotFoundException("Categoria", productDTORequest.categoryId());
 
-            //Product newProduct = new Product(productDTO.name(), productDTO.description(), productDTO.price(), optionalCategory.get());
-            Product newProduct = ProductMapper.dto2Entity(productDTORequest, optionalCategory.get());
+            // obtener los productiUsers a partir de las userIds
+            List<ProductUser> productUsers = productService.findProductUsersByIds(productDTORequest.userIds());
 
-            Product createdProduct = productService.addProduct(newProduct);
+
+            // maperar DTP 2 entity de products
+            Product newProduct = ProductMapper.toEntity(productDTORequest, optionalCategory.get(), productUsers);
+
+            // guardar el nuevo producto
+            Product createProduct = productService.addProduct(newProduct);
+
+            //convertir la entidad de producto en DTO parra dar una respuesta
+            ProductDTOResponse newProductDTO = ProductMapper.toDtoResponse(createProduct);
+
+            // retornar
+            return new ResponseEntity<>(newProductDTO, HttpStatus.CREATED);
+
+
+            //Product newProduct = new Product(productDTO.name(), productDTO.description(), productDTO.price(), optionalCategory.get());
+            //Product newProduct = ProductMapper.toEntity(productDTORequest, optionalCategory.get());
+
+            //Product createdProduct = productService.addProduct(newProduct);
 
             //transformar Entity -> DTO antes de mandarlo en json
             //ProductDTO newProductDTO = ProductMapper.entity2DTO(createdProduct);
-            ProductDTOResponse newProductDTO = ProductMapper.entity2DTO(createdProduct);
+            //ProductDTOResponse newProductDTO = ProductMapper.toDtoResponse(createdProduct);
 
             //return new ResponseEntity<>(newProductDTO, HttpStatus.CREATED);
-            return new ResponseEntity<>(newProductDTO, HttpStatus.CREATED);
+            //return new ResponseEntity<>(newProductDTO, HttpStatus.CREATED);
 
         }
         catch (Exception exception){

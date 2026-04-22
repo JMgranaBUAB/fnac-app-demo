@@ -2,8 +2,10 @@ package com.bcp1IO.fnac.service;
 
 import com.bcp1IO.fnac.model.Category;
 import com.bcp1IO.fnac.model.Product;
+import com.bcp1IO.fnac.model.ProductUser;
 import com.bcp1IO.fnac.repository.CategoryRepository;
 import com.bcp1IO.fnac.repository.ProductRepository;
+import com.bcp1IO.fnac.repository.ProductUserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +17,13 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductUserRepository productUserRepository;
 
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, ProductUserRepository productUserRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.productUserRepository = productUserRepository;
     }
 
     public List<Product> getAll(){
@@ -74,5 +78,10 @@ public class ProductService {
 
         //si no existe el producto, enviar un mensaje de error al usuario
         throw new RuntimeException("Product not found in DDBB with id : " + id);
+    }
+
+    public List<ProductUser> findProductUsersByIds(List<Integer> userIds) {
+        // Obtienes los usuarios por sus IDs
+        return productUserRepository.findByIdIn(userIds);
     }
 }
