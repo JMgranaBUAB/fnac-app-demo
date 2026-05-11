@@ -1,4 +1,4 @@
-package com.bcp1IO.fnac.dto;
+package com.bcp1IO.fnac.dto.product;
 
 import java.util.List;
 

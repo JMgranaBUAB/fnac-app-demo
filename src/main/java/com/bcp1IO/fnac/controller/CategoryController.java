@@ -1,9 +1,12 @@
 package com.bcp1IO.fnac.controller;
 
+import com.bcp1IO.fnac.dto.category.CategoryDTO;
+import com.bcp1IO.fnac.dto.category.CategoryMapper;
 import com.bcp1IO.fnac.exception.ObjectNotFoundException;
 import com.bcp1IO.fnac.model.Category;
 
 import com.bcp1IO.fnac.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +29,14 @@ public class CategoryController {
     }
 
     @PostMapping("/categories")
-    public Category createCategory(@RequestBody Category newCategory){
-        return categoryService.addCategory(newCategory);
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO){
+        Category newCategory = CategoryMapper.dtoToEntity(categoryDTO);
+        Category createdCategory = categoryService.addCategory(newCategory);
+        CategoryDTO createdCategoryDTO = CategoryMapper.entityToDTO(createdCategory);
+
+        return new ResponseEntity<>(createdCategoryDTO, HttpStatus.CREATED);
+
+        //return categoryService.addCategory(newCategory);
     }
 
     @GetMapping("/categories/{id}")

@@ -1,8 +1,8 @@
 package com.bcp1IO.fnac.controller;
 
-import com.bcp1IO.fnac.dto.ProductDTORequest;
-import com.bcp1IO.fnac.dto.ProductDTOResponse;
-import com.bcp1IO.fnac.dto.ProductMapper;
+import com.bcp1IO.fnac.dto.product.ProductDTORequest;
+import com.bcp1IO.fnac.dto.product.ProductDTOResponse;
+import com.bcp1IO.fnac.dto.product.ProductMapper;
 import com.bcp1IO.fnac.exception.ObjectNotFoundException;
 import com.bcp1IO.fnac.model.Category;
 import com.bcp1IO.fnac.model.Product;
